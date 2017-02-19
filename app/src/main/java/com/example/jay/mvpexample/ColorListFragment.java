@@ -1,7 +1,9 @@
 package com.example.jay.mvpexample;
 
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.example.jay.mvpexample.adapter.ColorRecyclerAdapter;
 import com.example.jay.mvpexample.data.ColorData;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -25,10 +28,11 @@ public class ColorListFragment extends Fragment implements ColorFragmentView{
     @BindView(R.id.colorRecycler)
     RecyclerView colorRecycler;
 
+    private ColorFragmentPresenter colorFragmentPresenter;
+
     public ColorListFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,11 +42,16 @@ public class ColorListFragment extends Fragment implements ColorFragmentView{
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        colorFragmentPresenter = new ColorFragmentPresenterImpl(this, new FindColorsInteractorImpl());
+    }
+
+    @Override
     public void setColorList(ArrayList<ColorData> colorList) {
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         colorRecycler.setLayoutManager(llm);
         colorRecycler.setAdapter(new ColorRecyclerAdapter(colorList));
-
     }
 
     @Override
@@ -59,4 +68,5 @@ public class ColorListFragment extends Fragment implements ColorFragmentView{
     public void showMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 }
