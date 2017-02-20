@@ -1,7 +1,10 @@
-package com.example.jay.mvpexample;
+package com.example.jay.mvpexample.presenter;
 
+import com.example.jay.mvpexample.view.ColorListFragment;
+import com.example.jay.mvpexample.model.FindColorsInteractor;
 import com.example.jay.mvpexample.data.ColorData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +26,7 @@ public class ColorFragmentPresenterImpl implements ColorFragmentPresenter, FindC
         if(mainView != null){
         //show progress bar
         }
-
+        findColorsInteractor.findColors(this);
     }
 
     @Override
@@ -33,16 +36,24 @@ public class ColorFragmentPresenterImpl implements ColorFragmentPresenter, FindC
 
     @Override
     public void onDestroy() {
-
+        mainView = null;
     }
 
     @Override
     public void onItemClicked(int position) {
-
+        if(mainView != null){
+            mainView.showMessage("position "+ position + " clicked");
+        }
     }
 
     @Override
-    public void onFinished(List<ColorData> colorData) {
-
+    public void onFinished(ArrayList<ColorData> colorData) {
+        if(mainView != null){
+            mainView.setColorList(colorData);
+        }
     }
+
+
+
+
 }

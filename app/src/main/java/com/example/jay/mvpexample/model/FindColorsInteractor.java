@@ -1,9 +1,10 @@
-package com.example.jay.mvpexample;
+package com.example.jay.mvpexample.model;
 
 import android.content.Context;
 
 import com.example.jay.mvpexample.data.ColorData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,8 +14,8 @@ import java.util.List;
 public interface FindColorsInteractor {
 
     interface OnFinishedListener{
-        void onFinished(List<ColorData> colorData);
+        void onFinished(ArrayList<ColorData> colorData);
     }
 
-    void findColors(Context context, OnFinishedListener listener);
+    void findColors(OnFinishedListener listener);
 }

@@ -1,4 +1,4 @@
-package com.example.jay.mvpexample;
+package com.example.jay.mvpexample.view;
 
 import com.example.jay.mvpexample.data.ColorData;
 
@@ -12,9 +12,6 @@ public interface ColorFragmentView {
 
     void setColorList(ArrayList<ColorData> colorList);
 
-    void hideColors();
-
-    void showColors();
 
     void showMessage(String message);
 

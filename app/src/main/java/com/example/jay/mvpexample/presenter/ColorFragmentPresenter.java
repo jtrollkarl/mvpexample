@@ -1,4 +1,4 @@
-package com.example.jay.mvpexample;
+package com.example.jay.mvpexample.presenter;
 
 /**
  * Created by Jay on 2017-02-18.

@@ -19,14 +19,30 @@ public class ColorRecyclerAdapter extends RecyclerView.Adapter<ColorRecyclerAdap
 
     private ArrayList<ColorData> colorDataArrayList;
 
+    public interface OnItemClickListener{
+        void onClick(int position);
+    }
 
-    public ColorRecyclerAdapter(ArrayList<ColorData> colorDataArrayList) {
-        this.colorDataArrayList = colorDataArrayList;
+    private OnItemClickListener listener;
+
+    public void setOnClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
+    public ColorRecyclerAdapter() {
+    }
+
+    public void setListAndUpdate(ArrayList<ColorData> colorData){
+        this.colorDataArrayList = colorData;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return colorDataArrayList.size();
+        if(colorDataArrayList != null){
+            return colorDataArrayList.size();
+        }else
+            return 0;
     }
 
     @Override
