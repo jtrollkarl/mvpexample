@@ -23,10 +23,11 @@ public class ColorFragmentPresenterImpl implements ColorFragmentPresenter, FindC
 
     @Override
     public void onResume() {
-        if(mainView != null){
-        //show progress bar
+        if (mainView != null) {
+            findColorsInteractor.findColors(this);
+            mainView.showMessage("Getting colors...");
         }
-        findColorsInteractor.findColors(this);
+
     }
 
     @Override
@@ -41,19 +42,17 @@ public class ColorFragmentPresenterImpl implements ColorFragmentPresenter, FindC
 
     @Override
     public void onItemClicked(int position) {
-        if(mainView != null){
-            mainView.showMessage("position "+ position + " clicked");
+        if (mainView != null) {
+            mainView.showMessage("position " + position + " clicked");
         }
     }
 
     @Override
     public void onFinished(ArrayList<ColorData> colorData) {
-        if(mainView != null){
+        if (mainView != null) {
             mainView.setColorList(colorData);
         }
     }
-
-
 
 
 }

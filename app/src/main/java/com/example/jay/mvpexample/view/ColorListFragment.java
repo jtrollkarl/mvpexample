@@ -52,7 +52,7 @@ public class ColorListFragment extends Fragment implements ColorFragmentView, Co
         View view = inflater.inflate(R.layout.fragment_color_list, container, false);
         ButterKnife.bind(this, view);
 
-        adapter = new ColorRecyclerAdapter();
+        adapter = new ColorRecyclerAdapter(getActivity().getApplicationContext());
         adapter.setOnClickListener(this);
         colorRecycler.setAdapter(adapter);
 
