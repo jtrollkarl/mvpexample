@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,20 +20,28 @@ import com.example.jay.mvpexample.adapter.ColorRecyclerAdapter;
 import com.example.jay.mvpexample.data.ColorData;
 import com.example.jay.mvpexample.presenter.ColorFragmentPresenter;
 import com.example.jay.mvpexample.presenter.ColorFragmentPresenterImpl;
+import com.hannesdorfmann.mosby.mvp.lce.MvpLceFragment;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.MvpLceViewStateFragment;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
-public class ColorListFragment extends Fragment implements ColorFragmentView, ColorRecyclerAdapter.OnItemClickListener{
+public class ColorListFragment extends
+        MvpLceViewStateFragment<SwipeRefreshLayout, List<ColorData>, ColorFragmentView, ColorFragmentPresenter>
+        implements ColorFragmentView, ColorRecyclerAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener{
 
 
     @BindView(R.id.colorRecycler)
     RecyclerView colorRecycler;
+    Unbinder unbinder;
 
-    private ColorFragmentPresenter colorFragmentPresenter;
 
     private ColorRecyclerAdapter adapter;
     private static String TAG = ColorListFragment.class.getSimpleName();
@@ -42,15 +51,30 @@ public class ColorListFragment extends Fragment implements ColorFragmentView, Co
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        colorFragmentPresenter = new ColorFragmentPresenterImpl(this, new FindColorsInteractorImpl());
+    public ColorFragmentPresenter createPresenter() {
+        return new ColorFragmentPresenterImpl();
     }
+
+    @Override
+    public LceViewState<List<ColorData>, ColorFragmentView> createViewState() {
+        setRetainInstance(true);
+
+        return new RetainingLceViewState<>();
+    }
+
+    @Override
+    public List<ColorData> getData() {
+        if(adapter != null){
+            return adapter.getData();
+        }
+        return null;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_color_list, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         adapter = new ColorRecyclerAdapter(getActivity().getApplicationContext());
         adapter.setOnClickListener(this);
@@ -66,16 +90,14 @@ public class ColorListFragment extends Fragment implements ColorFragmentView, Co
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        contentView.setOnRefreshListener(this);
 
     }
 
     @Override
-    public void setColorList(ArrayList<ColorData> colorList) {
-        adapter.setListAndUpdate(colorList);
-        Log.d(TAG, "List updated");
-
+    protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
+        return null;
     }
-
 
     @Override
     public void showMessage(String message) {
@@ -84,19 +106,30 @@ public class ColorListFragment extends Fragment implements ColorFragmentView, Co
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        colorFragmentPresenter.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        colorFragmentPresenter.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
     public void onClick(int position) {
-        colorFragmentPresenter.onItemClicked(position);
+        presenter.onItemClicked(position);
+    }
+
+    @Override
+    public void setData(List<ColorData> data) {
+        adapter.setListAndUpdate(new ArrayList<ColorData>(data));
+        Log.d(TAG, "List updated");
+
+    }
+
+    @Override
+    public void loadData(boolean pullToRefresh) {
+        presenter.loadData(pullToRefresh);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
+    public void onRefresh() {
+        loadData(true);
     }
 }

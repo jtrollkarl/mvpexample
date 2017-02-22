@@ -1,8 +1,11 @@
 package com.example.jay.mvpexample.presenter;
 
+import com.example.jay.mvpexample.model.FindColorsInteractorImpl;
+import com.example.jay.mvpexample.view.ColorFragmentView;
 import com.example.jay.mvpexample.view.ColorListFragment;
 import com.example.jay.mvpexample.model.FindColorsInteractor;
 import com.example.jay.mvpexample.data.ColorData;
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,48 +14,48 @@ import java.util.List;
  * Created by Jay on 2017-02-18.
  */
 
-public class ColorFragmentPresenterImpl implements ColorFragmentPresenter, FindColorsInteractor.OnFinishedListener {
+public class ColorFragmentPresenterImpl extends MvpBasePresenter<ColorFragmentView>
+        implements ColorFragmentPresenter, FindColorsInteractor.OnFinishedListener {
 
-    private ColorListFragment mainView;
-    private FindColorsInteractor findColorsInteractor;
 
-    public ColorFragmentPresenterImpl(ColorListFragment mainView, FindColorsInteractor findColorsInteractor) {
-        this.mainView = mainView;
-        this.findColorsInteractor = findColorsInteractor;
+    private FindColorsInteractorImpl interactor;
+
+    public ColorFragmentPresenterImpl() {
+
     }
 
+
     @Override
-    public void onResume() {
-        if (mainView != null) {
-            findColorsInteractor.findColors(this);
-            mainView.showMessage("Getting colors...");
+    public void loadData(boolean pullToRefresh) {
+        if(isViewAttached()){
+            interactor = new FindColorsInteractorImpl();
+            interactor.findColors(this);
         }
-
-    }
-
-    @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        mainView = null;
     }
 
     @Override
     public void onItemClicked(int position) {
-        if (mainView != null) {
-            mainView.showMessage("position " + position + " clicked");
-        }
+        getView().showMessage("Clicked " + position + " position");
+
     }
 
     @Override
     public void onFinished(ArrayList<ColorData> colorData) {
-        if (mainView != null) {
-            mainView.setColorList(colorData);
+        if (isViewAttached()) {
+            getView().setData(colorData);
+
         }
     }
 
+
+    @Override
+    public void attachView(ColorFragmentView view) {
+        super.attachView(view);
+    }
+
+    @Override
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+    }
 
 }

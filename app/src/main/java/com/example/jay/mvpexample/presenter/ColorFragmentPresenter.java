@@ -1,16 +1,15 @@
 package com.example.jay.mvpexample.presenter;
 
+import com.example.jay.mvpexample.view.ColorFragmentView;
+import com.hannesdorfmann.mosby.mvp.MvpPresenter;
+
 /**
  * Created by Jay on 2017-02-18.
  */
 
-public interface ColorFragmentPresenter {
+public interface ColorFragmentPresenter extends MvpPresenter<ColorFragmentView> {
 
-    void onResume();
-
-    void onPause();
-
-    void onDestroy();
+    void loadData(boolean pullToRefresh);
 
     void onItemClicked(int position);
 

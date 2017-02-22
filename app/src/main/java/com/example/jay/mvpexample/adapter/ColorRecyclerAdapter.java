@@ -13,6 +13,7 @@ import com.example.jay.mvpexample.data.ColorData;
 import com.example.jay.mvpexample.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jay on 2017-02-18.
@@ -49,6 +50,13 @@ public class ColorRecyclerAdapter extends RecyclerView.Adapter<ColorRecyclerAdap
             return colorDataArrayList.size();
         }else
             return 0;
+    }
+
+    public List<ColorData> getData(){
+        if(colorDataArrayList != null){
+            return colorDataArrayList;
+        }
+        return null;
     }
 
     @Override
