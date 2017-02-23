@@ -1,5 +1,7 @@
 package com.example.jay.mvpexample.presenter;
 
+import android.util.Log;
+
 import com.example.jay.mvpexample.model.FindColorsInteractorImpl;
 import com.example.jay.mvpexample.view.ColorFragmentView;
 import com.example.jay.mvpexample.view.ColorListFragment;
@@ -19,6 +21,7 @@ public class ColorFragmentPresenterImpl extends MvpBasePresenter<ColorFragmentVi
 
 
     private FindColorsInteractorImpl interactor;
+    private static final String TAG = ColorFragmentPresenterImpl.class.getSimpleName();
 
     public ColorFragmentPresenterImpl() {
 
@@ -27,6 +30,9 @@ public class ColorFragmentPresenterImpl extends MvpBasePresenter<ColorFragmentVi
 
     @Override
     public void loadData(boolean pullToRefresh) {
+
+        Log.d(TAG, String.valueOf(pullToRefresh));
+        getView().showLoading(pullToRefresh);
         if(isViewAttached()){
             interactor = new FindColorsInteractorImpl();
             interactor.findColors(this);
@@ -43,7 +49,7 @@ public class ColorFragmentPresenterImpl extends MvpBasePresenter<ColorFragmentVi
     public void onFinished(ArrayList<ColorData> colorData) {
         if (isViewAttached()) {
             getView().setData(colorData);
-
+            getView().showContent();
         }
     }
 

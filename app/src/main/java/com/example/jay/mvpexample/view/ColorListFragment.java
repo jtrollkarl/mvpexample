@@ -58,7 +58,6 @@ public class ColorListFragment extends
     @Override
     public LceViewState<List<ColorData>, ColorFragmentView> createViewState() {
         setRetainInstance(true);
-
         return new RetainingLceViewState<>();
     }
 
@@ -104,10 +103,21 @@ public class ColorListFragment extends
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void showContent() {
+        super.showContent();
+        contentView.setRefreshing(false);
+    }
 
     @Override
     public void onClick(int position) {
         presenter.onItemClicked(position);
+    }
+
+    @Override
+    public void showError(Throwable e, boolean pullToRefresh) {
+        super.showError(e, pullToRefresh);
+        contentView.setRefreshing(false);
     }
 
     @Override
@@ -125,6 +135,7 @@ public class ColorListFragment extends
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        adapter = null;
         unbinder.unbind();
     }
 
